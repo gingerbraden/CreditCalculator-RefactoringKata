@@ -1,0 +1,8 @@
+CustomerService.AddCustomer 
+- obrovska metoda, treba ju rozkuskovat
+- vytvorenie string constants
+- validacie treba optimalizovat
+- creditCalculator treba spravit cez factory
+
+CustomerCreditServiceClient
+- very scalable (needs a complete rework)

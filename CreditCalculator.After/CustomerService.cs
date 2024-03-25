@@ -19,13 +19,7 @@ public class CustomerService
             return false;
         }
 
-        var now = DateTime.Now;
-        var age = now.Year - dateOfBirth.Year;
-        if (now.Month < dateOfBirth.Month ||
-            now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
-        {
-            age--;
-        }
+        var age = CalculateAge(dateOfBirth);
 
 
         if (age < 21)
@@ -45,12 +39,27 @@ public class CustomerService
             LastName = lastName
         };
 
-        if (company.Type == "VeryImportantClient")
+        CalculateCreditLimit(company, customer);
+
+        if (customer.HasCreditLimit && customer.CreditLimit < 500)
+        {
+            return false;
+        }
+
+        var customerRepository = new CustomerRepository();
+        customerRepository.AddCustomer(customer);
+
+        return true;
+    }
+
+    private static void CalculateCreditLimit(Company company, Customer customer)
+    {
+        if (CustomerConstants.VERY_IMPORTANT_CLIENT.Equals(company.Type))
         {
             // Skip credit check
             customer.HasCreditLimit = false;
         }
-        else if (company.Type == "ImportantClient")
+        else if (CustomerConstants.IMPORTANT_CLIENT.Equals(company.Type))
         {
             // Do credit check and double credit limit
             customer.HasCreditLimit = true;
@@ -77,15 +86,18 @@ public class CustomerService
 
             customer.CreditLimit = creditLimit;
         }
+    }
 
-        if (customer.HasCreditLimit && customer.CreditLimit < 500)
+    private static int CalculateAge(DateTime dateOfBirth)
+    {
+        var now = DateTime.Now;
+        var age = now.Year - dateOfBirth.Year;
+        if (now.Month < dateOfBirth.Month ||
+            now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
         {
-            return false;
+            age--;
         }
 
-        var customerRepository = new CustomerRepository();
-        customerRepository.AddCustomer(customer);
-
-        return true;
+        return age;
     }
 }
