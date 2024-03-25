@@ -4,6 +4,14 @@ public class RegularCreditLimitCalculator : ICreditLimitCalculator
 {
     public decimal Calculate(Company company, Customer customer)
     {
-        throw new NotImplementedException();
+        customer.HasCreditLimit = true;
+        var creditService = new CustomerCreditServiceClient();
+
+        var creditLimit = creditService.GetCreditLimit(
+            customer.FirstName,
+            customer.LastName,
+            customer.DateOfBirth);
+
+        return creditLimit;
     }
 }

@@ -2,9 +2,18 @@
 
 public class CreditLimitCalculatorFactory
 {
-    Dictionary<String, Type> calculators = {
-        {CustomerConstants.REGULAR_CLIENT, typeof(RegularCreditLimitCalculator)},
-        {"banana", 20},
-        {"orange", 15}
+    static Dictionary<String, ICreditLimitCalculator> calculators = new Dictionary<string, ICreditLimitCalculator>(){
+        {CustomerConstants.REGULAR_CLIENT, new RegularCreditLimitCalculator()},
+        {CustomerConstants.IMPORTANT_CLIENT, new ImportantCreditLimitCalculator()},
     };
+
+
+    public static ICreditLimitCalculator GetCalculator(string type)
+    {
+        if (!calculators.ContainsKey(type))
+        {
+            throw new NotImplementedException();
+        }
+        return calculators[type];
+    }
 }

@@ -61,30 +61,11 @@ public class CustomerService
         }
         else if (CustomerConstants.IMPORTANT_CLIENT.Equals(company.Type))
         {
-            // Do credit check and double credit limit
-            customer.HasCreditLimit = true;
-            var creditService = new CustomerCreditServiceClient();
-
-            var creditLimit = creditService.GetCreditLimit(
-                customer.FirstName,
-                customer.LastName,
-                customer.DateOfBirth);
-
-            creditLimit *= 2;
-            customer.CreditLimit = creditLimit;
+            customer.CreditLimit = CreditLimitCalculatorFactory.GetCalculator(CustomerConstants.IMPORTANT_CLIENT).Calculate(company, customer); 
         }
         else
         {
-            // Do credit check
-            customer.HasCreditLimit = true;
-            var creditService = new CustomerCreditServiceClient();
-
-            var creditLimit = creditService.GetCreditLimit(
-                customer.FirstName,
-                customer.LastName,
-                customer.DateOfBirth);
-
-            customer.CreditLimit = creditLimit;
+            customer.CreditLimit = CreditLimitCalculatorFactory.GetCalculator(CustomerConstants.REGULAR_CLIENT).Calculate(company, customer);
         }
     }
 
