@@ -3,8 +3,9 @@
 public class CreditLimitCalculatorFactory
 {
     static Dictionary<String, ICreditLimitCalculator> calculators = new Dictionary<string, ICreditLimitCalculator>(){
-        {CustomerConstants.REGULAR_CLIENT, new RegularCreditLimitCalculator()},
-        {CustomerConstants.IMPORTANT_CLIENT, new ImportantCreditLimitCalculator()},
+        {Constants.REGULAR_CLIENT, new RegularCreditLimitCalculator()},
+        {Constants.IMPORTANT_CLIENT, new ImportantCreditLimitCalculator()},
+        {Constants.VERY_IMPORTANT_CLIENT, new VIPCreditLimitCalculator()}
     };
 
 

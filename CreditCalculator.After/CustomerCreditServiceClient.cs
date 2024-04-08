@@ -6,14 +6,14 @@ public class CustomerCreditServiceClient
     {
         if (firstName == "John" && lastName == "Doe")
         {
-            return 500.0m;
+            return Constants.LIMIT_JOHN_DOE;
         }
 
-        if (DateTime.Now.Year - dateOfBirth.Year > 40)
+        if (CustomerUtil.CalculateAge(dateOfBirth) > Constants.AGE_40)
         {
-            return 600.0m;
+            return Constants.LIMIT_OVER_40;
         }
 
-        return 249.9m;
+        return Constants.LIMIT_BASE;
     }
 }

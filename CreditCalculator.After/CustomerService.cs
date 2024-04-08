@@ -14,15 +14,15 @@ public class CustomerService
             return false;
         }
 
-        if (!email.Contains('@') && !email.Contains('.'))
+        if (!ValidateMail(email))
         {
             return false;
         }
 
-        var age = CalculateAge(dateOfBirth);
+        var age = CustomerUtil.CalculateAge(dateOfBirth);
 
 
-        if (age < 21)
+        if (age < Constants.AGE_21)
         {
             return false;
         }
@@ -41,7 +41,7 @@ public class CustomerService
 
         CalculateCreditLimit(company, customer);
 
-        if (customer.HasCreditLimit && customer.CreditLimit < 500)
+        if (customer.HasCreditLimit && customer.CreditLimit < Constants.LIMIT_OVER_40)
         {
             return false;
         }
@@ -54,31 +54,17 @@ public class CustomerService
 
     private static void CalculateCreditLimit(Company company, Customer customer)
     {
-        if (CustomerConstants.VERY_IMPORTANT_CLIENT.Equals(company.Type))
+        customer.CreditLimit =
+            CreditLimitCalculatorFactory.GetCalculator(company.CompanyType).Calculate(company, customer);
+        if (customer.CreditLimit == -1)
         {
             // Skip credit check
             customer.HasCreditLimit = false;
         }
-        else if (CustomerConstants.IMPORTANT_CLIENT.Equals(company.Type))
-        {
-            customer.CreditLimit = CreditLimitCalculatorFactory.GetCalculator(CustomerConstants.IMPORTANT_CLIENT).Calculate(company, customer); 
-        }
-        else
-        {
-            customer.CreditLimit = CreditLimitCalculatorFactory.GetCalculator(CustomerConstants.REGULAR_CLIENT).Calculate(company, customer);
-        }
     }
 
-    private static int CalculateAge(DateTime dateOfBirth)
+    private static bool ValidateMail(string mail)
     {
-        var now = DateTime.Now;
-        var age = now.Year - dateOfBirth.Year;
-        if (now.Month < dateOfBirth.Month ||
-            now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)
-        {
-            age--;
-        }
-
-        return age;
+        return Constants.EMAIL_REGEX_PATTERN.Match(mail).Success;
     }
 }
